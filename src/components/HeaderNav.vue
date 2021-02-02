@@ -5,6 +5,11 @@
       height="28px"
       alt="TaxonWorks">
     <div class="server-selector">
+      <a
+        :href="`${server.apiUrl}/stats`"
+        target="_blank">
+        Raw link
+      </a>
       <select v-model="server">
         <option
           v-for="item in apiList"
@@ -98,6 +103,12 @@ export default {
       margin-left: 4px;
       width: 300px;
     }
+  }
+
+  .server-selector a {
+    text-decoration: none;
+    font-size: 12px;
+    margin-right: 8px
   }
 
   .menu {

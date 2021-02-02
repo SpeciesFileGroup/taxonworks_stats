@@ -4,16 +4,20 @@
     ref="card"
     :style="cssVars"
     :class="{ 'card-stat-pulse': activePulse }">
-    <animate-number
-      ref="number"
-      class="card-stat-animated-count"
-      :style="animateNumberStyle"
-      :number="number"
-      @animation-start="setActivePulse(true)"
-      @animation-end="setActivePulse(false)"/>
     <div
-      ref="label"
-      class="card-stat-label">{{ label }}</div>
+      ref="cardData"
+      class="card-stat-data">
+      <animate-number
+        ref="number"
+        class="card-stat-animated-count"
+        :number="number"
+        :style="animateNumberStyle"
+        @animation-start="setActivePulse(true)"
+        @animation-end="setActivePulse(false)"/>
+      <div
+        ref="label"
+        class="card-stat-label">{{ label }}</div>
+    </div>
   </div>
 </template>
 
@@ -69,7 +73,7 @@ export default {
       this.activePulse = value
     },
     resizeFont () {
-      const elementCard = this.$refs.card
+      const elementCard = this.$refs.cardData
       const cardWidth = parseFloat(getComputedStyle(elementCard, null).width.replace('px', ''))
       const fontSize = getFontSize(this.number, cardWidth)
 
@@ -82,16 +86,19 @@ export default {
 </script>
 <style scoped>
   .card-stat {
-    color: white;
     background-color: var(--backgroundColor);
     border-radius: .9rem;
     box-shadow: rgba(36, 37, 38, 0.08) 4px 4px 15px 0px;
+
+    color: white;
+    margin: 0 1rem 1rem 0;
     display: inline-block;
-    padding: 1rem;
-    margin: 0.5rem;
-    width: auto;
+    width: 100%;
     text-align: center;
-    white-space: pre-line;
+  }
+
+  .card-stat-data {
+    padding: 1rem
   }
 
   .card-stat-label {
@@ -101,7 +108,6 @@ export default {
 
   .card-stat-animated-count {
     font-size: 1.5rem;
-    width: 100%;
   }
 
   .card-stat-pulse {
