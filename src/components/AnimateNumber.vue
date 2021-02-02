@@ -1,5 +1,5 @@
 <template>
-  <span>{{ displayNumber }}</span>
+  <div>{{ displayNumber }}</div>
 </template>
 
 <script>

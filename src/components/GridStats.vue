@@ -13,6 +13,7 @@
 import CardStat from './CardStat'
 
 export default {
+  name: 'GridStats',
   components: {
     CardStat
   },

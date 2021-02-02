@@ -1,14 +1,19 @@
 <template>
   <div
     class="card-stat"
+    ref="card"
     :style="cssVars"
     :class="{ 'card-stat-pulse': activePulse }">
-    <span class="card-stat-label">{{ label }}</span>
     <animate-number
+      ref="number"
       class="card-stat-animated-count"
+      :style="animateNumberStyle"
       :number="number"
       @animation-start="setActivePulse(true)"
       @animation-end="setActivePulse(false)"/>
+    <div
+      ref="label"
+      class="card-stat-label">{{ label }}</div>
   </div>
 </template>
 
@@ -16,8 +21,10 @@
 
 import AnimateNumber from './AnimateNumber'
 import randomColor from '@/utils/randomColor'
+import getFontSize from '@/utils/getFontSize'
 
 export default {
+  name: 'CardStat',
   components: {
     AnimateNumber
   },
@@ -34,7 +41,15 @@ export default {
   data () {
     return {
       activePulse: false,
-      bgColor: randomColor()
+      bgColor: randomColor(),
+      animateNumberStyle: {}
+    }
+  },
+  watch: {
+    number: {
+      handler () {
+        this.resizeFont()
+      }
     }
   },
   computed: {
@@ -46,9 +61,21 @@ export default {
       }
     }
   },
+  mounted () {
+    this.resizeFont()
+  },
   methods: {
     setActivePulse (value) {
       this.activePulse = value
+    },
+    resizeFont () {
+      const elementCard = this.$refs.card
+      const cardWidth = parseFloat(getComputedStyle(elementCard, null).width.replace('px', ''))
+      const fontSize = getFontSize(this.number, cardWidth)
+
+      this.animateNumberStyle = {
+        fontSize: `${fontSize}px`
+      }
     }
   }
 }
@@ -64,15 +91,17 @@ export default {
     margin: 0.5rem;
     width: auto;
     text-align: center;
+    white-space: pre-line;
   }
 
   .card-stat-label {
     display: block;
-    margin-bottom: 8px;
+    margin-top: 8px;
   }
 
   .card-stat-animated-count {
     font-size: 1.5rem;
+    width: 100%;
   }
 
   .card-stat-pulse {
