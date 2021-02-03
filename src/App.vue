@@ -91,7 +91,7 @@ export default {
 
   .grid-stats {
     margin: 1rem;
-    columns: 12 150px;
+    columns: 10 150px;
     column-gap: 1rem;
   }
 
