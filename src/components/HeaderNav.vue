@@ -58,7 +58,8 @@ export default {
     return {
       links: {
         Home: 'https://taxonworks.org',
-        Code: 'https://github.com/SpeciesFileGroup'
+        Code: 'https://github.com/SpeciesFileGroup/taxonworks',
+        API: 'https://api.taxonworks.org'
       }
     }
   },
