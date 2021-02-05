@@ -7,7 +7,8 @@
       v-model="server"/>
     <GridStats
       class="grid-stats"
-      :stats="stats"/>
+      :stats="stats.data"
+      :metadata="stats.metadata"/>
   </div>
 </template>
 
@@ -30,7 +31,7 @@ export default {
     return {
       apiList,
       countdownProcess: undefined,
-      delaySeconds: 10,
+      refreshInSeconds: 10,
       remain: 0,
       server: apiList[0],
       stats: {},
@@ -66,7 +67,7 @@ export default {
         }
         console.log(response.data)
       }).finally(() => {
-        this.countdown(this.delaySeconds)
+        this.countdown(this.refreshInSeconds)
       })
     },
     countdown (seconds) {

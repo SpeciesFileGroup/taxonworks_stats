@@ -4,6 +4,12 @@
       v-for="(number, key) in stats"
       :key="key"
       :number="number"
+      :label="key"
+      link/>
+    <CardStat
+      v-for="(number, key) in metadata"
+      :key="key"
+      :number="number"
       :label="key"/>
   </div>
 </template>
@@ -18,9 +24,13 @@ export default {
     CardStat
   },
   props: {
+    metadata: {
+      type: Object,
+      default: () => { return {} }
+    },
     stats: {
       type: Object,
-      required: true
+      default: () => { return {} }
     },
     randomColor: {
       type: Boolean,

@@ -1,7 +1,10 @@
 <template>
-  <div
+  <component
+    :is="htmlTag"
     class="card-stat"
     ref="card"
+    target="_blank"
+    :href="linkString"
     :style="cssVars"
     :class="{ 'card-stat-pulse': activePulse }">
     <div
@@ -18,7 +21,7 @@
         ref="label"
         class="card-stat-label">{{ label }}</div>
     </div>
-  </div>
+  </component>
 </template>
 
 <script>
@@ -26,6 +29,7 @@
 import AnimateNumber from './AnimateNumber'
 import randomColor from '@/utils/randomColor'
 import getFontSize from '@/utils/getFontSize'
+import { toPascalCase } from '@/utils/strings'
 
 export default {
   name: 'CardStat',
@@ -40,6 +44,10 @@ export default {
     label: {
       type: String,
       required: true
+    },
+    link: {
+      type: Boolean,
+      default: false
     }
   },
   data () {
@@ -63,6 +71,12 @@ export default {
         '--scaleEnd': 1.2,
         '--backgroundColor': this.bgColor
       }
+    },
+    linkString () {
+      return `https://rdoc.taxonworks.org/${toPascalCase(this.label).slice(0, -1)}.html`
+    },
+    htmlTag () {
+      return this.link ? 'a' : 'div'
     }
   },
   mounted () {
@@ -95,6 +109,7 @@ export default {
     display: inline-block;
     width: 100%;
     text-align: center;
+    text-decoration: none;
   }
 
   .card-stat-data {

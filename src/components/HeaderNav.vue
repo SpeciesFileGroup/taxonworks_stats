@@ -2,13 +2,13 @@
   <header class="app-header">
     <img
       src="@/assets/taxonworks_logo-full.svg"
-      height="28px"
+      height="48px"
       alt="TaxonWorks">
     <div class="server-selector">
       <a
         :href="`${server.apiUrl}/stats`"
         target="_blank">
-        Raw link
+        JSON link
       </a>
       <select v-model="server">
         <option
@@ -24,6 +24,7 @@
         Status: ({{ status.message }}). {{ refreshMessage }}
       </div>
     </div>
+    <what-this/>
     <ul class="menu">
       <li
         v-for="(link, key) in links"
@@ -35,7 +36,13 @@
 </template>
 
 <script>
+
+import WhatThis from '@/components/WhatThis.vue'
+
 export default {
+  components: {
+    WhatThis
+  },
   props: {
     apiList: {
       type: Array,
@@ -86,7 +93,7 @@ export default {
   .app-header {
     background-color: white;
     box-shadow: rgba(36, 37, 38, 0.08) 4px 4px 15px 0px;
-    height: 40px;
+    height: 64px;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -108,8 +115,8 @@ export default {
 
   .server-selector a {
     text-decoration: none;
-    font-size: 12px;
-    margin-right: 8px
+    margin-right: 8px;
+    color: #00845D
   }
 
   .menu {
@@ -122,6 +129,7 @@ export default {
 
       a {
         text-decoration: none;
+        color: #00845D;
       }
     }
 
