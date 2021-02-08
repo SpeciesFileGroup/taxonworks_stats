@@ -100,6 +100,7 @@ export default {
 
   .item {
     font-size: 18px;
+    font-weight: 500;
     padding:0px 1em;
     text-align: center;
     width: 100%;

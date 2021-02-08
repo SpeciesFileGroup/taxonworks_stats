@@ -106,8 +106,9 @@ export default {
 }
 </script>
 <style lang="scss">
+
   body {
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: 'Hind', sans-serif;
     background-color: #f7f8fc;
     margin: 0px;
   }
