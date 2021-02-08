@@ -1,14 +1,25 @@
 <template>
   <div id="app">
-    <header-nav
-      :api-list="apiList"
-      :remain="remain"
-      :status="status"
-      v-model="server"/>
+    <HeaderNav>
+      <ServerSelector
+        slot="middle"
+        v-model="server"
+        :api-list="apiList"
+        :remain="remain"
+        :status="status"
+      />
+    </HeaderNav>
     <GridStats
-      class="grid-stats"
       :stats="stats.data"
       :metadata="stats.metadata"/>
+    <FooterComponent>
+      <ServerSelector
+        v-model="server"
+        :api-list="apiList"
+        :remain="remain"
+        :status="status"
+      />
+    </FooterComponent>
   </div>
 </template>
 
@@ -16,24 +27,37 @@
 
 import GridStats from '@/components/GridStats.vue'
 import HeaderNav from '@/components/HeaderNav'
+import ServerSelector from '@/components/ServerSelector.vue'
 import axios from 'axios'
 import apiList from '@/config.json'
+import FooterComponent from '@/components/Footer'
 
 const axiosInstance = axios.create()
+const localServer = {
+  apiUrl: 'http://localhost:3000/api/v1',
+  apiParams: {
+    token: null,
+    project_id: null
+  }
+}
+
+if (process.env.NODE_ENV === 'development') { apiList.push(localServer) }
 
 export default {
   name: 'App',
   components: {
     GridStats,
-    HeaderNav
+    HeaderNav,
+    ServerSelector,
+    FooterComponent
   },
   data () {
     return {
-      apiList,
+      apiList: apiList,
       countdownProcess: undefined,
       refreshInSeconds: 10,
       remain: 0,
-      server: apiList[0],
+      server: undefined,
       stats: {},
       status: {
         state: 'black',
@@ -48,8 +72,7 @@ export default {
         axiosInstance.defaults.params = apiParams
         clearTimeout(this.countdownProcess)
         this.loadStats()
-      },
-      immediate: true
+      }
     }
   },
   methods: {
@@ -65,7 +88,6 @@ export default {
           state: 'red',
           message: response.data.message
         }
-        console.log(response.data)
       }).finally(() => {
         this.countdown(this.refreshInSeconds)
       })
@@ -90,10 +112,33 @@ export default {
     margin: 0px;
   }
 
-  .grid-stats {
-    margin: 1rem;
-    columns: 10 150px;
-    column-gap: 1rem;
+  select {
+    border-radius: 4px;
+    padding: 4px;
+    font-size: 16px;
+  }
+
+  button {
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none;
+    background-color: #00845D;
+    color: white;
+    padding: 4px;
+    border: none;
+    padding: 4px 8px;
+    border-radius: 8px;
+  }
+
+  button:disabled,
+  button[disabled]{
+    background-color: #cccccc;
+    color: #666666;
+  }
+
+  a {
+    text-decoration: none;
+    color: #00845D;
   }
 
 </style>

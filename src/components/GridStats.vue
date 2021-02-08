@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="grid-stats">
     <CardStat
       v-for="(number, key) in stats"
       :key="key"
@@ -39,3 +39,11 @@ export default {
   }
 }
 </script>
+
+<style>
+  .grid-stats {
+    margin: 1rem;
+    columns: 10 150px;
+    column-gap: 1rem;
+  }
+</style>

@@ -1,38 +1,29 @@
 <template>
-  <header class="app-header">
+<header>
+  <div class="empty">
+  </div>
+  <nav
+    :class="menuState"
+    class="navbar">
     <img
+      class="brand"
       src="@/assets/taxonworks_logo-full.svg"
       height="48px"
       alt="TaxonWorks">
-    <div class="server-selector">
-      <a
-        :href="`${server.apiUrl}/stats`"
-        target="_blank">
-        JSON link
-      </a>
-      <select v-model="server">
-        <option
-          v-for="item in apiList"
-          :key="item.apiUrl"
-          :value="item">
-          {{ item.apiUrl }}
-        </option>
-      </select>
-      <div
-        class="status"
-        :style="{ color: stateStatus }">
-        Status: ({{ status.message }}). {{ refreshMessage }}
-      </div>
+    <button type="button" @click="setMenuState" class="toggle"></button>
+    <div class="middle">
+        <slot name="middle"/>
     </div>
-    <what-this/>
-    <ul class="menu">
-      <li
+    <div class="right">
+      <what-this/>
+      <a
+        class="item"
         v-for="(link, key) in links"
-        :key="key">
-        <a :href="link">{{ key }}</a>
-      </li>
-    </ul>
-  </header>
+        :key="key"
+        :href="link">{{ key }}</a>
+    </div>
+  </nav>
+</header>
 </template>
 
 <script>
@@ -43,26 +34,9 @@ export default {
   components: {
     WhatThis
   },
-  props: {
-    apiList: {
-      type: Array,
-      required: true
-    },
-    value: {
-      type: Object,
-      required: false
-    },
-    remain: {
-      type: Number,
-      required: true
-    },
-    status: {
-      type: Object,
-      required: true
-    }
-  },
   data () {
     return {
+      openMenu: false,
       links: {
         Home: 'https://taxonworks.org',
         Code: 'https://github.com/SpeciesFileGroup/taxonworks',
@@ -71,76 +45,128 @@ export default {
     }
   },
   computed: {
-    server: {
-      get () {
-        return this.value
-      },
-      set (value) {
-        this.$emit('input', value)
-      }
-    },
-    refreshMessage () {
-      return this.remain ? `Refreshing in ${this.remain}` : 'Refreshing...'
-    },
-    stateStatus () {
-      return this.status.state
+    menuState () {
+      return this.openMenu ? 'active' : ''
+    }
+  },
+  methods: {
+    setMenuState () {
+      this.openMenu = !this.openMenu
     }
   }
 }
 </script>
 
 <style lang="scss">
-  .app-header {
+  .navbar {
+    box-sizing: border-box;
     background-color: white;
     box-shadow: rgba(36, 37, 38, 0.08) 4px 4px 15px 0px;
-    height: 64px;
     display: flex;
-    flex-direction: row;
-    align-items: center;
     justify-content: space-between;
+    align-items: center;
+    position: fixed;
     padding: 0 1rem;
+    width: 100%;
+    height: 64px;
+    left: 0px;
+    top: 0;
 
-    .server-selector {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-    }
-
-    .status {
-      font-size: 12px;
-      margin-left: 4px;
-      width: 300px;
-    }
-  }
-
-  .server-selector a {
-    text-decoration: none;
-    margin-right: 8px;
-    color: #00845D
-  }
-
-  .menu {
-    margin: 0px;
-    padding: 0px;
-    list-style: none;
-
-    li {
-      display: inline;
-
-      a {
-        text-decoration: none;
-        color: #00845D;
+    .middle, .right {
+      display: none;
+      @media screen and (min-width: 1200px) {
+        display: flex;
+        align-items: center;
       }
     }
+  }
 
-    li::before {
-      content: '|';
-      padding: 0px 8px;
+  .toggle {
+    border: none;
+    padding: 1em 0em;
+    color: black;
+    vertical-align: middle;
+    background-color: white;
+  }
+
+  .toggle::after {
+    content: "\2630";
+    font-size: 20px;
+  }
+
+  .item {
+    font-size: 18px;
+    padding:0px 1em;
+    text-align: center;
+    width: 100%;
+    white-space: nowrap;
+  }
+
+  .brand {
+    height: 48px;
+    text-align: center;
+    color: white;
+    margin-right: 1em;
+  }
+
+  .server-selector {
+    display: flex;
+    flex-direction: row;
+    text-align: left;
+    vertical-align: middle;
+  }
+
+  @media screen and (max-width: 1200px) {
+    .server-selector {
+      display: block;
     }
-
-    li:first-child::before {
-      content: '';
+    .json-link {
+      display: none;
     }
   }
 
+  @media screen and (min-width: 1200px) {
+    .navbar {
+      display: flex;
+
+      .middle, .right {
+        display: flex;
+        flex: 1;
+      }
+
+      .item {
+        width: auto;
+      }
+
+      .right {
+        justify-content: flex-end;
+      }
+
+      .toggle {
+        display: none;
+      }
+    }
+  }
+
+  @media screen and (max-width: 1200px) {
+    .navbar.active {
+      .toggle {
+        background: white;
+      }
+
+      .right {
+        left: 0;
+        width: 100%;
+        background-color: white;
+        top:100%;
+        position: absolute;
+        display: block;
+      }
+
+      .item {
+        padding:1em 0px;
+        display: block;
+      }
+    }
+  }
 </style>

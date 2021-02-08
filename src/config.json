@@ -33,12 +33,5 @@
       "token": null,
       "project_id": null
     }
-  },
-  {
-    "apiUrl": "http://localhost:3000/api/v1",
-    "apiParams": {
-      "token": null,
-      "project_id": null
-    }
   }
 ]

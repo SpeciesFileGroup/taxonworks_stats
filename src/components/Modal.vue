@@ -135,4 +135,12 @@ export default {
   transform: scale(1.1);
 }
 
+@media screen and (max-width: 700px) {
+  .modal-container {
+    width: 90vw;
+    max-width: 90vw;
+    padding: 20px 30px;
+  }
+}
+
 </style>
