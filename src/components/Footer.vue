@@ -17,6 +17,7 @@
     height: 64px;
   }
   .footer {
+    box-sizing: border-box;
     height: 64px;
     display: flex;
     align-items: center;
