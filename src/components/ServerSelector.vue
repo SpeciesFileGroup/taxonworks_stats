@@ -83,6 +83,7 @@ export default {
 
   .json-button {
     margin:0px 8px;
+    white-space: nowrap;
   }
 
   .status {

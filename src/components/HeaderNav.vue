@@ -94,6 +94,10 @@ export default {
     font-size: 20px;
   }
 
+  .toggle:focus {
+    outline:0;
+  }
+
   .item {
     font-size: 18px;
     padding:0px 1em;

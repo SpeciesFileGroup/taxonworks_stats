@@ -124,10 +124,9 @@ export default {
     text-decoration: none;
     background-color: #00845D;
     color: white;
-    padding: 4px;
     border: none;
-    padding: 4px 8px;
-    border-radius: 8px;
+    padding: 6px 8px;
+    border-radius: 4px;
   }
 
   button:disabled,
@@ -139,6 +138,13 @@ export default {
   a {
     text-decoration: none;
     color: #00845D;
+  }
+
+  input,
+  button,
+  select,
+  a {
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
   }
 
 </style>
