@@ -81,6 +81,10 @@ export default {
   },
   mounted () {
     this.resizeFont()
+    window.addEventListener('resize', this.resizeFont)
+  },
+  beforeDestroy () {
+    window.removeEventListener('resize', this.resizeFont)
   },
   methods: {
     setActivePulse (value) {
