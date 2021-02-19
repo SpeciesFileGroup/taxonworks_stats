@@ -31,6 +31,7 @@ import ServerSelector from '@/components/ServerSelector.vue'
 import axios from 'axios'
 import apiList from '@/config.json'
 import FooterComponent from '@/components/Footer'
+import setParam from './utils/setParam'
 
 const axiosInstance = axios.create()
 const localServer = {
@@ -57,7 +58,7 @@ export default {
       countdownProcess: undefined,
       refreshInSeconds: 10,
       remain: 0,
-      server: undefined,
+      server: {},
       stats: {},
       status: {
         state: 'black',
@@ -71,9 +72,16 @@ export default {
         axiosInstance.defaults.baseURL = apiUrl
         axiosInstance.defaults.params = apiParams
         clearTimeout(this.countdownProcess)
+        setParam('server', apiList.findIndex(server => server.apiUrl === apiUrl))
         this.loadStats()
       }
     }
+  },
+  created () {
+    const urlParams = new URLSearchParams(window.location.search)
+    const serverIndex = Number(urlParams.get('server'))
+
+    this.server = apiList[serverIndex] || apiList[0]
   },
   methods: {
     loadStats () {
