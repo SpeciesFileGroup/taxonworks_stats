@@ -18,7 +18,7 @@
       class="json-button"
       :disabled="!server"
       @click="openLink">
-      JSON link
+      JSON
     </button>
     <div
       class="status"
