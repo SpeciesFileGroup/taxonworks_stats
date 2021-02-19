@@ -5,13 +5,13 @@ const getTextWidth = (text, font) => {
   return ctx.measureText(text).width
 }
 
-const getFontSize = (text, width) => {
+const getFontSize = (text, width, size = 1) => {
   let textWidth
   let fontSize = 0
   do {
     fontSize++
     textWidth = getTextWidth(text, `${fontSize}px Arial`)
-  } while (textWidth < width)
+  } while (textWidth < width * size)
 
   return fontSize
 }

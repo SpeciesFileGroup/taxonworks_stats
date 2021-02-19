@@ -31,6 +31,8 @@ import randomColor from '@/utils/randomColor'
 import getFontSize from '@/utils/getFontSize'
 import { toPascalCase } from '@/utils/strings'
 
+const digitSizes = [1, 0.35, 0.5]
+
 export default {
   name: 'CardStat',
   components: {
@@ -93,7 +95,8 @@ export default {
     resizeFont () {
       const elementCard = this.$refs.cardData
       const cardWidth = parseFloat(getComputedStyle(elementCard, null).width.replace('px', ''))
-      const fontSize = getFontSize(this.number, cardWidth)
+      const numberLength = this.number.toString().length
+      const fontSize = getFontSize(this.number, cardWidth, digitSizes[numberLength])
 
       this.animateNumberStyle = {
         fontSize: `${fontSize}px`
@@ -102,11 +105,11 @@ export default {
   }
 }
 </script>
-<style scoped>
+<style lang="scss" scoped>
   .card-stat {
     background-color: var(--backgroundColor);
     border-radius: .9rem;
-    box-shadow: rgba(36, 37, 38, 0.08) 4px 4px 15px 0px;
+    box-shadow: 4px 4px 15px 0px rgba(36, 37, 38, 0.08);
 
     color: white;
     margin: 0 1rem 1rem 0;
@@ -114,6 +117,12 @@ export default {
     width: 100%;
     text-align: center;
     text-decoration: none;
+    transition: all 0.5s ease;
+  }
+
+  a.card-stat:hover {
+    transition: all 0.5s ease;
+    box-shadow: 0px 0px 15px 0px rgba(61, 142, 223, 1);
   }
 
   .card-stat-data {
