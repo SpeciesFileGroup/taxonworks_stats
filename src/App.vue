@@ -72,16 +72,16 @@ export default {
         axiosInstance.defaults.baseURL = apiUrl
         axiosInstance.defaults.params = apiParams
         clearTimeout(this.countdownProcess)
-        setParam('server', apiList.findIndex(server => server.apiUrl === apiUrl))
+        setParam('server', new URL(apiUrl).host)
         this.loadStats()
       }
     }
   },
   created () {
     const urlParams = new URLSearchParams(window.location.search)
-    const serverIndex = Number(urlParams.get('server'))
+    const paramUrl = urlParams.get('server')
 
-    this.server = apiList[serverIndex] || apiList[0]
+    this.server = apiList.find(({ apiUrl }) => apiUrl.includes(paramUrl)) || apiList[0]
   },
   methods: {
     loadStats () {
