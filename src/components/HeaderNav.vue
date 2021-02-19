@@ -71,6 +71,7 @@ export default {
     height: 64px;
     left: 0px;
     top: 0;
+    z-index: 2;
 
     .middle, .right {
       display: none;

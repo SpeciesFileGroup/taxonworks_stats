@@ -1,7 +1,7 @@
 <template>
-<div class="footer-section">
+<div class="mobile-bar-section">
   <div class="empty"/>
-  <div class="footer">
+  <div class="mobile-bar">
     <slot>
     </slot>
   </div>
@@ -16,7 +16,7 @@
   .empty {
     height: 64px;
   }
-  .footer {
+  .mobile-bar {
     box-sizing: border-box;
     height: 64px;
     display: flex;
@@ -24,7 +24,7 @@
     width: 100%;
     background-color: white;
     position: fixed;
-    bottom: 0;
+    top: 64px;
     padding: 0px 1em;
     box-shadow: rgba(36, 37, 38, 0.08) 0px 4px 15px 0px;
 
@@ -39,7 +39,7 @@
   }
 
   @media screen and (min-width: 1200px) {
-    .footer-section {
+    .mobile-bar-section {
       display: none;
     }
   }

@@ -9,17 +9,17 @@
         :status="status"
       />
     </HeaderNav>
-    <GridStats
-      :stats="stats.data"
-      :metadata="stats.metadata"/>
-    <FooterComponent>
+    <MobileBar>
       <ServerSelector
         v-model="server"
         :api-list="apiList"
         :remain="remain"
         :status="status"
       />
-    </FooterComponent>
+    </MobileBar>
+    <GridStats
+      :stats="stats.data"
+      :metadata="stats.metadata"/>
   </div>
 </template>
 
@@ -30,7 +30,7 @@ import HeaderNav from '@/components/HeaderNav'
 import ServerSelector from '@/components/ServerSelector.vue'
 import axios from 'axios'
 import apiList from '@/config.json'
-import FooterComponent from '@/components/Footer'
+import MobileBar from '@/components/MobileBar'
 import setParam from './utils/setParam'
 
 const axiosInstance = axios.create()
@@ -50,7 +50,7 @@ export default {
     GridStats,
     HeaderNav,
     ServerSelector,
-    FooterComponent
+    MobileBar
   },
   data () {
     return {
