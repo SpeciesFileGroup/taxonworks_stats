@@ -81,16 +81,21 @@ export default {
       status: {
         state: 'black',
         message: 'Idle'
-      }
+      },
+      requestCount: 0,
+      maxRequest: 50
     }
   },
   watch: {
     server: {
       handler ({ apiParams, apiUrl }) {
+        const host = new URL(apiUrl).host
+
         axiosInstance.defaults.baseURL = apiUrl
         axiosInstance.defaults.params = apiParams
+        document.title = `TaxonWorks Stats - ${host}`
         clearTimeout(this.countdownProcess)
-        setParam('server', new URL(apiUrl).host)
+        setParam('server', host)
         this.stats = {}
         this.loadStats()
       }
@@ -104,8 +109,15 @@ export default {
   },
   methods: {
     loadStats () {
-      axiosInstance.get('/stats').then(response => {
-        this.stats = response.data
+      this.requestCount++
+
+      if (this.requestCount > this.maxRequest) {
+        alert('Are you still here?')
+        this.requestCount = 0
+      }
+
+      axiosInstance.get('/stats').then(({ data }) => {
+        this.stats = data
         this.status = {
           state: 'green',
           message: 'Successful'
@@ -119,6 +131,7 @@ export default {
         this.countdown(this.refreshInSeconds)
       })
     },
+
     countdown (seconds) {
       this.remain = seconds
       if (seconds === 0) {
@@ -129,9 +142,11 @@ export default {
         }, 1000)
       }
     },
+
     openLink () {
       window.open(`${this.server.apiUrl}/stats`)
     },
+
     makeCSVFile () {
       const headers = ['Metadata', 'Total']
       const a = window.document.createElement('a')

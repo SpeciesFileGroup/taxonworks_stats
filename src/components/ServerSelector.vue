@@ -18,7 +18,7 @@
     <div
       class="status"
       :style="{ color: stateStatus }">
-      Status: ({{ status.message }}). <span v-if="server">{{ refreshMessage }}</span>
+      Status: {{ status.message }}. <span v-if="server">{{ refreshMessage }}</span>
     </div>
   </div>
 </template>
