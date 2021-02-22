@@ -13,13 +13,8 @@
         {{ item.apiUrl }}
       </option>
     </select>
-    <button
-      type="button"
-      class="json-button"
-      :disabled="!server"
-      @click="openLink">
-      JSON
-    </button>
+    <slot name="buttons">
+    </slot>
     <div
       class="status"
       :style="{ color: stateStatus }">
@@ -79,11 +74,6 @@ export default {
     display: flex;
     flex-direction: row;
     align-items: center;
-  }
-
-  .json-button {
-    margin:0px 8px;
-    white-space: nowrap;
   }
 
   .status {

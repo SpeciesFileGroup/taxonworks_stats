@@ -7,7 +7,24 @@
         :api-list="apiList"
         :remain="remain"
         :status="status"
-      />
+      >
+        <template slot="buttons">
+          <button
+            type="button"
+            class="json-button"
+            :disabled="!server"
+            @click="openLink">
+            JSON
+          </button>
+          <button
+            type="button"
+            class="csv-button"
+            :disabled="!Object.keys(stats).length"
+            @click="makeCSVFile">
+            CSV
+          </button>
+        </template>
+      </ServerSelector>
     </HeaderNav>
     <MobileBar>
       <ServerSelector
@@ -32,6 +49,7 @@ import axios from 'axios'
 import apiList from '@/config.json'
 import MobileBar from '@/components/MobileBar'
 import setParam from './utils/setParam'
+import createCSV from './utils/createCVS'
 
 const axiosInstance = axios.create()
 const localServer = {
@@ -42,7 +60,7 @@ const localServer = {
   }
 }
 
-if (process.env.NODE_ENV === 'development') { apiList.push(localServer) }
+if (process.env.NODE_ENV === 'development' && !apiList.find(({ apiUrl }) => apiUrl === localServer.apiUrl)) { apiList.push(localServer) }
 
 export default {
   name: 'App',
@@ -73,6 +91,7 @@ export default {
         axiosInstance.defaults.params = apiParams
         clearTimeout(this.countdownProcess)
         setParam('server', new URL(apiUrl).host)
+        this.stats = {}
         this.loadStats()
       }
     }
@@ -109,6 +128,22 @@ export default {
           this.countdown(seconds - 1)
         }, 1000)
       }
+    },
+    openLink () {
+      window.open(`${this.server.apiUrl}/stats`)
+    },
+    makeCSVFile () {
+      const headers = ['Metadata', 'Total']
+      const a = window.document.createElement('a')
+      const date = (new Date()).toISOString().replace(/z|t/gi, ' ').trim()
+      const filename = `${new URL(this.server.apiUrl).host} ${date}.csv`
+      const blob = new Blob([createCSV(headers, Object.assign({}, ...Object.values(this.stats)))])
+
+      a.href = window.URL.createObjectURL(blob, { type: 'text/csv;charset=utf-8;' })
+      a.download = filename
+      document.body.appendChild(a)
+      a.click()
+      document.body.removeChild(a)
     }
   }
 }
@@ -154,6 +189,14 @@ export default {
   select,
   a {
     -webkit-tap-highlight-color: rgba(0,0,0,0);
+  }
+
+  .json-button {
+    margin-left: 4px;
+  }
+
+  .csv-button {
+    margin: 0px 4px;
   }
 
 </style>
