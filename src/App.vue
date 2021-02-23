@@ -148,9 +148,9 @@ export default {
     },
 
     makeCSVFile () {
-      const { data, metadata } = this.stats
+      const data = Object.assign({}, ...Object.values(this.stats))
       const headers = ['Metadata', 'Total']
-      const sortObject = Object.assign({}, ...Object.keys(data).sort().map(key => ({ [key]: data[key] })), metadata)
+      const sortObject = Object.assign({}, ...Object.keys(data).sort().map(key => ({ [key]: data[key] })))
       const blob = new Blob([createCSV(headers, sortObject)])
       const date = (new Date()).toISOString().replace(/z|t/gi, ' ').trim()
       const filename = `${new URL(this.server.apiUrl).host} ${date}.csv`
