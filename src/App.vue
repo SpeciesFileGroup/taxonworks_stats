@@ -112,6 +112,10 @@ export default {
   computed: {
     refreshMessage () {
       return this.remain ? `Refreshing in ${this.remain}` : 'Refreshing...'
+    },
+
+    selectedProject () {
+      return this.projects[this.projectToken] || 'All projects'
     }
   },
 
@@ -123,31 +127,41 @@ export default {
         axiosInstance.defaults.baseURL = apiUrl
         axiosInstance.defaults.params = apiParams
         document.title = `TaxonWorks Stats - ${host}`
-        clearTimeout(this.countdownProcess)
         setParam('server', host)
         this.stats = {}
-        this.loadStats()
         this.loadProjects()
       }
     },
 
     projectToken: {
       handler (token) {
-        this.setProjectToken(token)
-        clearTimeout(this.countdownProcess)
+        setParam('project_token', token)
+        axiosInstance.defaults.params = Object.assign({}, this.server.apiParams, { project_token: token })
         this.loadStats()
+      }
+    },
+
+    projects: {
+      handler (newVal) {
+        if (newVal) {
+          this.projectToken = Object.keys(newVal).find(token => this.projectToken === token)
+        }
       }
     }
   },
   created () {
     const urlParams = new URLSearchParams(window.location.search)
     const paramUrl = urlParams.get('server')
+    const paramToken = urlParams.get('project_token')
 
     this.server = apiList.find(({ apiUrl }) => apiUrl.includes(paramUrl)) || apiList[0]
+    this.projectToken = paramToken
   },
   methods: {
     loadStats () {
+      clearTimeout(this.countdownProcess)
       this.requestCount++
+      this.remain = 0
 
       if (this.requestCount > this.maxRequest) {
         alert('Are you still here?')
@@ -175,8 +189,9 @@ export default {
       if (seconds === 0) {
         this.loadStats()
       } else {
+        clearTimeout(this.countdownProcess)
         this.countdownProcess = setTimeout(() => {
-          this.countdown(seconds - 1)
+          this.countdown(this.remain - 1)
         }, 1000)
       }
     },
@@ -191,17 +206,13 @@ export default {
       window.open(`${this.server.apiUrl}/stats`)
     },
 
-    setProjectToken (token) {
-      axiosInstance.defaults.params = Object.assign({}, this.server.apiParams, { project_token: token })
-    },
-
     makeCSVFile () {
       const data = Object.assign({}, ...Object.values(this.stats))
       const headers = ['Metadata', 'Total']
       const sortObject = Object.assign({}, ...Object.keys(data).sort().map(key => ({ [key]: data[key] })))
       const blob = new Blob([createCSV(headers, sortObject)])
       const date = (new Date()).toISOString().replace(/z|t/gi, ' ').trim()
-      const filename = `${new URL(this.server.apiUrl).host} ${date}.csv`
+      const filename = `${new URL(this.server.apiUrl).host} - ${this.selectedProject} - ${date}.csv`
       const a = document.createElement('a')
 
       a.href = URL.createObjectURL(blob, { type: 'text/csv;charset=utf-8;' })
