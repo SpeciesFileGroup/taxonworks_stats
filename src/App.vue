@@ -1,38 +1,54 @@
 <template>
   <div id="app">
     <HeaderNav>
-      <ServerSelector
-        slot="middle"
-        v-model="server"
-        :api-list="apiList"
-        :remain="remain"
-        :status="status"
-      >
-        <template slot="buttons">
-          <button
-            type="button"
-            class="json-button"
-            :disabled="!server"
-            @click="openLink">
-            JSON
-          </button>
-          <button
-            type="button"
-            class="csv-button"
-            :disabled="!Object.keys(stats).length"
-            @click="makeCSVFile">
-            CSV
-          </button>
-        </template>
-      </ServerSelector>
+      <template slot="selectors">
+        <ServerSelector
+          v-model="server"
+          :api-list="apiList"
+        />
+        <ProjectSelector
+          v-model="projectToken"
+          :projects="projects"
+        />
+      </template>
+      <template slot="buttons">
+        <button
+          type="button"
+          class="json-button"
+          :disabled="!server"
+          @click="openLink">
+          JSON
+        </button>
+        <button
+          type="button"
+          class="csv-button"
+          :disabled="!Object.keys(stats).length"
+          @click="makeCSVFile">
+          CSV
+        </button>
+        <StatusMessage
+          :server="server"
+          :status="status"
+          :remain="remain"
+        />
+      </template>
     </HeaderNav>
     <MobileBar>
-      <ServerSelector
-        v-model="server"
-        :api-list="apiList"
-        :remain="remain"
-        :status="status"
-      />
+      <div class="navbar-selectors">
+        <ServerSelector
+          v-model="server"
+          :api-list="apiList"
+        />
+        <ProjectSelector
+          v-model="projectToken"
+          :projects="projects"
+        />
+        <StatusMessage
+          :server="server"
+          :status="status"
+          :remain="remain"
+        />
+      </div>
     </MobileBar>
     <GridStats
       :stats="stats.data"
@@ -45,6 +61,8 @@
 import GridStats from '@/components/GridStats.vue'
 import HeaderNav from '@/components/HeaderNav'
 import ServerSelector from '@/components/ServerSelector.vue'
+import StatusMessage from '@/components/StatusMessage.vue'
+import ProjectSelector from '@/components/ProjectSelector.vue'
 import axios from 'axios'
 import apiList from '@/config.json'
 import MobileBar from '@/components/MobileBar'
@@ -67,7 +85,9 @@ export default {
   components: {
     GridStats,
     HeaderNav,
+    ProjectSelector,
     ServerSelector,
+    StatusMessage,
     MobileBar
   },
   data () {
@@ -77,6 +97,8 @@ export default {
       refreshInSeconds: 10,
       remain: 0,
       server: {},
+      projects: {},
+      projectToken: undefined,
       stats: {},
       status: {
         state: 'black',
@@ -86,6 +108,13 @@ export default {
       maxRequest: 50
     }
   },
+
+  computed: {
+    refreshMessage () {
+      return this.remain ? `Refreshing in ${this.remain}` : 'Refreshing...'
+    }
+  },
+
   watch: {
     server: {
       handler ({ apiParams, apiUrl }) {
@@ -97,6 +126,15 @@ export default {
         clearTimeout(this.countdownProcess)
         setParam('server', host)
         this.stats = {}
+        this.loadStats()
+        this.loadProjects()
+      }
+    },
+
+    projectToken: {
+      handler (token) {
+        this.setProjectToken(token)
+        clearTimeout(this.countdownProcess)
         this.loadStats()
       }
     }
@@ -143,8 +181,18 @@ export default {
       }
     },
 
+    loadProjects (server) {
+      axiosInstance.get().then(({ data }) => {
+        this.projects = Object.assign({}, ...data.open_projects)
+      })
+    },
+
     openLink () {
       window.open(`${this.server.apiUrl}/stats`)
+    },
+
+    setProjectToken (token) {
+      axiosInstance.defaults.params = Object.assign({}, this.server.apiParams, { project_token: token })
     },
 
     makeCSVFile () {

@@ -1,15 +1,15 @@
 <template>
-  <select v-model="server">
+  <select v-model="project">
     <option
       :value="undefined"
       disabled>
-      Choose a server
+      All projects
     </option>
     <option
-      v-for="item in apiList"
-      :key="item.apiUrl"
-      :value="item">
-      {{ item.apiUrl }}
+      v-for="(item, key) in projects"
+      :key="key"
+      :value="key">
+      {{ item }}
     </option>
   </select>
 </template>
@@ -18,27 +18,24 @@
 export default {
   props: {
     value: {
-      type: Object,
+      type: String,
       default: undefined
     },
-    apiList: {
-      type: Array,
+
+    projects: {
+      type: Object,
       required: true
     }
   },
+
   computed: {
-    server: {
+    project: {
       get () {
         return this.value
       },
       set (value) {
         this.$emit('input', value)
       }
-    }
-  },
-  methods: {
-    openLink () {
-      window.open(`${this.server.apiUrl}/stats`)
     }
   }
 }

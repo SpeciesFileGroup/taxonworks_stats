@@ -14,11 +14,11 @@
 
 <style lang="scss">
   .empty {
-    height: 64px;
+    height: 100px;
   }
   .mobile-bar {
     box-sizing: border-box;
-    height: 64px;
+    height: 100px;
     display: flex;
     align-items: center;
     width: 100%;
@@ -27,6 +27,8 @@
     top: 64px;
     padding: 0px 1em;
     box-shadow: rgba(36, 37, 38, 0.08) 0px 4px 15px 0px;
+    z-index: 2;
+    justify-content: center;
 
     .json-button {
       display: none;
@@ -35,6 +37,12 @@
     .server-selector {
       width: 100%;
       flex-direction: column;
+    }
+
+    .navbar-selectors {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
   }
 

@@ -12,7 +12,10 @@
       alt="TaxonWorks">
     <button type="button" @click="setMenuState" class="toggle"></button>
     <div class="middle">
-        <slot name="middle"/>
+      <div class="navbar-selectors">
+        <slot name="selectors"/>
+      </div>
+      <slot name="buttons"/>
     </div>
     <div class="right">
       <what-this/>
@@ -66,9 +69,8 @@ export default {
     justify-content: space-between;
     align-items: center;
     position: fixed;
-    padding: 0 1rem;
+    padding: 0.5rem 1rem;
     width: 100%;
-    height: 64px;
     left: 0px;
     top: 0;
     z-index: 2;
@@ -115,11 +117,10 @@ export default {
     margin-right: 1em;
   }
 
-  .server-selector {
+  .navbar-selectors {
     display: flex;
-    flex-direction: row;
-    text-align: left;
-    vertical-align: middle;
+    flex-direction: column;
+    justify-content: center;
   }
 
   @media screen and (max-width: 1200px) {
@@ -135,9 +136,14 @@ export default {
     .navbar {
       display: flex;
 
-      .middle, .right {
+      .middle {
         display: flex;
         flex: 1;
+      }
+
+      .right {
+        display: flex;
+        flex: 0.5;
       }
 
       .item {
