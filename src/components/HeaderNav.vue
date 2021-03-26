@@ -119,8 +119,12 @@ export default {
 
   .navbar-selectors {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
+
+    select {
+      margin-right: 4px;
+    }
   }
 
   @media screen and (max-width: 1200px) {
@@ -130,6 +134,7 @@ export default {
     .json-link {
       display: none;
     }
+
   }
 
   @media screen and (min-width: 1200px) {
@@ -157,7 +162,17 @@ export default {
       .toggle {
         display: none;
       }
+
+      .navbar-selectors {
+        flex-direction: row;
+      }
     }
+  }
+
+  @media screen and (max-width: 1500px) {
+      .navbar-selectors {
+        flex-direction: column !important;
+      }
   }
 
   @media screen and (max-width: 1200px) {

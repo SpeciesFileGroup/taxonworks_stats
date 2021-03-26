@@ -256,10 +256,6 @@ export default {
     -webkit-tap-highlight-color: rgba(0,0,0,0);
   }
 
-  .json-button {
-    margin-left: 4px;
-  }
-
   .csv-button {
     margin: 0px 4px;
   }

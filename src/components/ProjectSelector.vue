@@ -1,8 +1,6 @@
 <template>
   <select v-model="project">
-    <option
-      :value="undefined"
-      disabled>
+    <option :value="undefined">
       All projects
     </option>
     <option
