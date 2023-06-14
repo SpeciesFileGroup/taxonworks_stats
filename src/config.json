@@ -28,6 +28,13 @@
     }
   },
   {
+    "apiUrl": "https://sandstorm.taxonworks.org/api/v1",
+    "apiParams": {
+      "token": null,
+      "project_id": null
+    }
+  },
+  {
     "apiUrl": "https://sandworm.taxonworks.org/api/v1",
     "apiParams": {
       "token": null,
