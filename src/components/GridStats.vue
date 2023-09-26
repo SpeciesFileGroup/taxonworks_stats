@@ -5,18 +5,19 @@
       :key="key"
       :number="number"
       :label="key"
-      link/>
+      link
+    />
     <CardStat
       v-for="(number, key) in metadata"
       :key="key"
       :number="number"
-      :label="key"/>
+      :label="key"
+    />
   </div>
 </template>
 
 <script>
-
-import CardStat from './CardStat'
+import CardStat from './CardStat.vue'
 
 export default {
   name: 'GridStats',
@@ -26,11 +27,15 @@ export default {
   props: {
     metadata: {
       type: Object,
-      default: () => { return {} }
+      default: () => {
+        return {}
+      }
     },
     stats: {
       type: Object,
-      default: () => { return {} }
+      default: () => {
+        return {}
+      }
     },
     randomColor: {
       type: Boolean,
@@ -41,9 +46,9 @@ export default {
 </script>
 
 <style>
-  .grid-stats {
-    margin: 1rem;
-    columns: 10 150px;
-    column-gap: 1rem;
-  }
+.grid-stats {
+  margin: 1rem;
+  columns: 10 150px;
+  column-gap: 1rem;
+}
 </style>

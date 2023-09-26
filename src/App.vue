@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <HeaderNav>
-      <template slot="selectors">
+      <template #selectors>
         <ServerSelector
           v-model="server"
           :api-list="apiList"
@@ -11,19 +11,21 @@
           :projects="projects"
         />
       </template>
-      <template slot="buttons">
+      <template #buttons>
         <button
           type="button"
           class="json-button"
           :disabled="!server"
-          @click="openLink">
+          @click="openLink"
+        >
           JSON
         </button>
         <button
           type="button"
           class="csv-button"
           :disabled="!Object.keys(stats).length"
-          @click="makeCSVFile">
+          @click="makeCSVFile"
+        >
           CSV
         </button>
         <StatusMessage
@@ -52,20 +54,20 @@
     </MobileBar>
     <GridStats
       :stats="stats.data"
-      :metadata="stats.metadata"/>
+      :metadata="stats.metadata"
+    />
   </div>
 </template>
 
 <script>
-
 import GridStats from '@/components/GridStats.vue'
-import HeaderNav from '@/components/HeaderNav'
+import HeaderNav from '@/components/HeaderNav.vue'
 import ServerSelector from '@/components/ServerSelector.vue'
 import StatusMessage from '@/components/StatusMessage.vue'
 import ProjectSelector from '@/components/ProjectSelector.vue'
 import axios from 'axios'
 import apiList from '@/config.json'
-import MobileBar from '@/components/MobileBar'
+import MobileBar from '@/components/MobileBar.vue'
 import setParam from './utils/setParam'
 import createCSV from './utils/createCVS'
 
@@ -78,7 +80,12 @@ const localServer = {
   }
 }
 
-if (process.env.NODE_ENV === 'development' && !apiList.find(({ apiUrl }) => apiUrl === localServer.apiUrl)) { apiList.push(localServer) }
+if (
+  process.env.NODE_ENV === 'development' &&
+  !apiList.find(({ apiUrl }) => apiUrl === localServer.apiUrl)
+) {
+  apiList.push(localServer)
+}
 
 export default {
   name: 'App',
@@ -90,7 +97,7 @@ export default {
     StatusMessage,
     MobileBar
   },
-  data () {
+  data() {
     return {
       apiList: apiList,
       countdownProcess: undefined,
@@ -110,18 +117,18 @@ export default {
   },
 
   computed: {
-    refreshMessage () {
+    refreshMessage() {
       return this.remain ? `Refreshing in ${this.remain}` : 'Refreshing...'
     },
 
-    selectedProject () {
+    selectedProject() {
       return this.projects[this.projectToken] || 'All projects'
     }
   },
 
   watch: {
     server: {
-      handler ({ apiParams, apiUrl }) {
+      handler({ apiParams, apiUrl }) {
         const host = new URL(apiUrl).host
 
         axiosInstance.defaults.baseURL = apiUrl
@@ -134,31 +141,38 @@ export default {
     },
 
     projectToken: {
-      handler (token) {
+      handler(token) {
         setParam('project_token', token)
-        axiosInstance.defaults.params = Object.assign({}, this.server.apiParams, { project_token: token })
+        axiosInstance.defaults.params = Object.assign(
+          {},
+          this.server.apiParams,
+          { project_token: token }
+        )
         this.loadStats()
       }
     },
 
     projects: {
-      handler (newVal) {
+      handler(newVal) {
         if (newVal) {
-          this.projectToken = Object.keys(newVal).find(token => this.projectToken === token)
+          this.projectToken = Object.keys(newVal).find(
+            (token) => this.projectToken === token
+          )
         }
       }
     }
   },
-  created () {
+  created() {
     const urlParams = new URLSearchParams(window.location.search)
     const paramUrl = urlParams.get('server')
     const paramToken = urlParams.get('project_token')
 
-    this.server = apiList.find(({ apiUrl }) => apiUrl.includes(paramUrl)) || apiList[0]
+    this.server =
+      apiList.find(({ apiUrl }) => apiUrl.includes(paramUrl)) || apiList[0]
     this.projectToken = paramToken
   },
   methods: {
-    loadStats () {
+    loadStats() {
       clearTimeout(this.countdownProcess)
       this.requestCount++
       this.remain = 0
@@ -168,23 +182,29 @@ export default {
         this.requestCount = 0
       }
 
-      axiosInstance.get('/stats').then(({ data }) => {
-        this.stats = data
-        this.status = {
-          state: 'green',
-          message: 'Successful'
-        }
-      }, ({ response }) => {
-        this.status = {
-          state: 'red',
-          message: response.data.message
-        }
-      }).finally(() => {
-        this.countdown(this.refreshInSeconds)
-      })
+      axiosInstance
+        .get('/stats')
+        .then(
+          ({ data }) => {
+            this.stats = data
+            this.status = {
+              state: 'green',
+              message: 'Successful'
+            }
+          },
+          ({ response }) => {
+            this.status = {
+              state: 'red',
+              message: response.data.message
+            }
+          }
+        )
+        .finally(() => {
+          this.countdown(this.refreshInSeconds)
+        })
     },
 
-    countdown (seconds) {
+    countdown(seconds) {
       this.remain = seconds
       if (seconds === 0) {
         this.loadStats()
@@ -196,23 +216,35 @@ export default {
       }
     },
 
-    loadProjects (server) {
+    loadProjects() {
       axiosInstance.get().then(({ data }) => {
-        this.projects = Object.assign({}, ...data.open_projects)
+        this.projects = Object.fromEntries(
+          data.open_projects.map((project) => [
+            project.project_token,
+            project.name
+          ])
+        )
       })
     },
 
-    openLink () {
+    openLink() {
       window.open(`${this.server.apiUrl}/stats`)
     },
 
-    makeCSVFile () {
+    makeCSVFile() {
       const data = Object.assign({}, ...Object.values(this.stats))
       const headers = ['Metadata', 'Total']
-      const sortObject = Object.assign({}, ...Object.keys(data).sort().map(key => ({ [key]: data[key] })))
+      const sortObject = Object.assign(
+        {},
+        ...Object.keys(data)
+          .sort()
+          .map((key) => ({ [key]: data[key] }))
+      )
       const blob = new Blob([createCSV(headers, sortObject)])
-      const date = (new Date()).toISOString().replace(/z|t/gi, ' ').trim()
-      const filename = `${new URL(this.server.apiUrl).host} - ${this.selectedProject} - ${date}.csv`
+      const date = new Date().toISOString().replace(/z|t/gi, ' ').trim()
+      const filename = `${new URL(this.server.apiUrl).host} - ${
+        this.selectedProject
+      } - ${date}.csv`
       const a = document.createElement('a')
 
       a.href = URL.createObjectURL(blob, { type: 'text/csv;charset=utf-8;' })
@@ -225,50 +257,48 @@ export default {
 }
 </script>
 <style lang="scss">
+body {
+  font-family: 'Hind', sans-serif;
+  background-color: #f7f8fc;
+  margin: 0px;
+}
 
-  body {
-    font-family: 'Hind', sans-serif;
-    background-color: #f7f8fc;
-    margin: 0px;
-  }
+select {
+  border-radius: 4px;
+  padding: 4px;
+  font-size: 16px;
+}
 
-  select {
-    border-radius: 4px;
-    padding: 4px;
-    font-size: 16px;
-  }
+button {
+  cursor: pointer;
+  font-size: 16px;
+  text-decoration: none;
+  background-color: #00845d;
+  color: white;
+  border: none;
+  padding: 6px 8px;
+  border-radius: 4px;
+}
 
-  button {
-    cursor: pointer;
-    font-size: 16px;
-    text-decoration: none;
-    background-color: #00845D;
-    color: white;
-    border: none;
-    padding: 6px 8px;
-    border-radius: 4px;
-  }
+button:disabled,
+button[disabled] {
+  background-color: #cccccc;
+  color: #666666;
+}
 
-  button:disabled,
-  button[disabled]{
-    background-color: #cccccc;
-    color: #666666;
-  }
+a {
+  text-decoration: none;
+  color: #00845d;
+}
 
-  a {
-    text-decoration: none;
-    color: #00845D;
-  }
+input,
+button,
+select,
+a {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
 
-  input,
-  button,
-  select,
-  a {
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
-  }
-
-  .csv-button {
-    margin: 0px 4px;
-  }
-
+.csv-button {
+  margin: 0px 4px;
+}
 </style>
