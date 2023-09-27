@@ -2,13 +2,15 @@
   <select v-model="server">
     <option
       :value="undefined"
-      disabled>
+      disabled
+    >
       Choose a server
     </option>
     <option
       v-for="item in apiList"
       :key="item.apiUrl"
-      :value="item">
+      :value="item"
+    >
       {{ item.apiUrl }}
     </option>
   </select>
@@ -17,7 +19,7 @@
 <script>
 export default {
   props: {
-    value: {
+    modelValue: {
       type: Object,
       default: undefined
     },
@@ -26,18 +28,22 @@ export default {
       required: true
     }
   },
+
+  emits: ['update:modelValue'],
+
   computed: {
     server: {
-      get () {
-        return this.value
+      get() {
+        return this.modelValue
       },
-      set (value) {
-        this.$emit('input', value)
+      set(value) {
+        this.$emit('update:modelValue', value)
       }
     }
   },
+
   methods: {
-    openLink () {
+    openLink() {
       window.open(`${this.server.apiUrl}/stats`)
     }
   }

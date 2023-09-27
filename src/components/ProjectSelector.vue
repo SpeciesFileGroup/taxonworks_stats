@@ -1,12 +1,11 @@
 <template>
   <select v-model="project">
-    <option :value="undefined">
-      All projects
-    </option>
+    <option :value="undefined">All projects</option>
     <option
       v-for="(item, key) in projects"
       :key="key"
-      :value="key">
+      :value="key"
+    >
       {{ item }}
     </option>
   </select>
@@ -15,7 +14,7 @@
 <script>
 export default {
   props: {
-    value: {
+    modelValue: {
       type: String,
       default: undefined
     },
@@ -26,13 +25,15 @@ export default {
     }
   },
 
+  emits: ['update:modelValue'],
+
   computed: {
     project: {
-      get () {
-        return this.value
+      get() {
+        return this.modelValue
       },
-      set (value) {
-        this.$emit('input', value)
+      set(value) {
+        this.$emit('update:modelValue', value)
       }
     }
   }
