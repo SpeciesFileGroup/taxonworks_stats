@@ -218,6 +218,19 @@ export default {
 
     loadProjects() {
       axiosInstance.get().then(({ data }) => {
+        data.open_projects.sort((a, b) => {
+          const nameA = a.name.toLowerCase()
+          const nameB = b.name.toLowerCase()
+
+          if (nameA < nameB) {
+            return -1
+          }
+          if (nameA > nameB) {
+            return 1
+          }
+          return 0
+        })
+
         this.projects = Object.fromEntries(
           data.open_projects.map((project) => [
             project.project_token,
