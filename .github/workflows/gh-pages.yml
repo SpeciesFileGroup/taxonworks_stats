@@ -1,8 +1,8 @@
-name: gh-pages
+name: build-page
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
   build:
@@ -11,20 +11,23 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Set up Node 14
+      - name: Set up Node 18
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '18'
 
       - name: Install Node packages
         run: npm install
-          
+
       - name: Build site
         run: npm run build
-      
+
       - name: Deploy
-        uses: peaceiris/actions-gh-pages@bbdfb200618d235585ad98e965f4aafc39b4c501 # Pinning for security reasons (action not provided by GitHub)
+        uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
           cname: stats.taxonworks.org
+
+permissions:
+  contents: write
