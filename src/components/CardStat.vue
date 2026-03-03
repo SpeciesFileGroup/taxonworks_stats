@@ -150,6 +150,7 @@ a.card-stat:hover {
 
 .card-stat-animated-count {
   font-size: 1.5rem;
+  font-variant-numeric: tabular-nums;
 }
 
 .card-stat-pulse {
